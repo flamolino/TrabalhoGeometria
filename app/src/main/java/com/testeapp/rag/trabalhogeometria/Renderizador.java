@@ -36,6 +36,9 @@ public class Renderizador implements GLSurfaceView.Renderer {
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 
+
+
+
     }
 
     @Override
@@ -63,6 +66,9 @@ public class Renderizador implements GLSurfaceView.Renderer {
         this.paralelogramo.setScala(1, 1);
         this.paralelogramo.setCor(1, 0, 0, 1);
         this.paralelogramo.desenha ();
+
+
+
 
     }
 
