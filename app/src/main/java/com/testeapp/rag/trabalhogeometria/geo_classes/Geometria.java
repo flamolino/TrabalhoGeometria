@@ -18,6 +18,7 @@ public abstract class Geometria {
     private float rotate_x;
     private float rotate_y;
     private float rotate_z;
+    private int tamanho;
     private GL10 openGL = null;
 
     public Geometria() {
@@ -198,5 +199,21 @@ public abstract class Geometria {
 
     protected void setOpenGL(GL10 openGL) {
         this.openGL = openGL;
+    }
+
+    public float getPosX(){
+        return this.getTranslate_x ();
+    }
+
+    public float getPosY(){
+        return this.getTranslate_y ();
+    }
+
+    public int getTamanho() {
+        return tamanho;
+    }
+
+    protected void setTamanho(int tamanho) {
+        this.tamanho = tamanho;
     }
 }

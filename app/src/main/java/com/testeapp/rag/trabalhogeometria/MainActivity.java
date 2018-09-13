@@ -3,6 +3,7 @@ package com.testeapp.rag.trabalhogeometria;
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.view.MotionEvent;
 
 public class MainActivity extends Activity {
 
@@ -19,5 +20,13 @@ public class MainActivity extends Activity {
         setContentView(this.superficieDesenho);
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        float x = event.getX ();
+        float y = event.getY ();
 
+        this.render.setCoordTouch ( x, y, event.getAction () );
+
+        return super.onTouchEvent ( event );
+    }
 }
