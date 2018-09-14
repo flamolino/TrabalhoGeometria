@@ -12,6 +12,7 @@ public class Paralelogramo extends Geometria {
 
     private float[] vet_coords = null;
     private FloatBuffer buffer = null;
+    private float red, green, blue;
 
     public Paralelogramo(GL10 openGL, int tamanho){
 
@@ -26,6 +27,10 @@ public class Paralelogramo extends Geometria {
 
     public void desenha(){
 
+        this.red = this.getColor_red ();
+        this.green = this.getColor_green ();
+        this.blue = this.getColor_blue ();
+        this.setCor ( 0,0,0,1 );
         int tamanho = this.getTamanho ();
 
         this.vet_coords = new float[] {
@@ -33,6 +38,22 @@ public class Paralelogramo extends Geometria {
                 -tamanho/2+(tamanho/2), tamanho/2,
                 (tamanho * 2)/2, -tamanho/2,
                 (tamanho * 2 + (tamanho))/2, tamanho/2
+        };
+
+        this.buffer = GeraBuffer.generateBuffer(this.vet_coords);
+        this.getOpenGL ().glVertexPointer(2, GL10.GL_FLOAT, 0, this.buffer);
+
+        this.getOpenGL ().glLoadIdentity ();
+        this.setOpenGLConfigs ();
+        this.getOpenGL ().glDrawArrays ( GL10.GL_TRIANGLE_STRIP, 0, 4 );
+
+        float lin = 1;
+        this.setCor ( this.red,this.green,this.blue,1 );
+        this.vet_coords = new float[] {
+                -tamanho/2+lin, -tamanho/2+lin,
+                -tamanho/2+(tamanho/2)+lin-1, tamanho/2-lin,
+                (tamanho * 2)/2-lin, -tamanho/2+lin,
+                (tamanho * 2 + (tamanho))/2-lin-1, tamanho/2-lin
         };
 
         this.buffer = GeraBuffer.generateBuffer(this.vet_coords);

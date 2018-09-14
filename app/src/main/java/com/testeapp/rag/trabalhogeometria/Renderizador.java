@@ -1,6 +1,7 @@
 package com.testeapp.rag.trabalhogeometria;
 
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.testeapp.rag.trabalhogeometria.geo_classes.Geometria;
@@ -183,7 +184,7 @@ public class Renderizador implements GLSurfaceView.Renderer {
                     }
                 }else {
 
-                    int new_tam = this.largura / 4;
+                    int new_tam = (int) Math.floor ( this.largura / 3.5f );
                     this.menu.setCorQuadrado ( 0, 0, 0 );
                     this.menu.setCorTriangulo ( 0, 0, 0 );
                     this.menu.setCorParalelogramo ( 0, 0, 0 );
@@ -205,7 +206,9 @@ public class Renderizador implements GLSurfaceView.Renderer {
                         if (this.obj_selecionado != null) {
                             if (this.t_coord_y < ((this.altura - 120) - (this.obj_selecionado.getTamanho ()) / 2) && this.t_coord_y >= this.obj_selecionado.getTamanho () / 2) {
                                 if (this.t_coord_x >= this.obj_selecionado.getTamanho () / 2 && this.t_coord_x < (largura - this.obj_selecionado.getTamanho () / 2)) {
-                                    this.obj_selecionado.setPosXY ( t_coord_x, t_coord_y );
+
+                                    this.obj_selecionado.setPosXY ( t_coord_x, t_coord_y);
+
                                 }
                             }
                         }
