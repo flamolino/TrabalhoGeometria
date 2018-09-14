@@ -9,6 +9,8 @@ public class MainActivity extends Activity {
 
     private GLSurfaceView superficieDesenho = null;
     private Renderizador render = null;
+    long startTime;
+    static final int MAX_DURATION = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,11 +24,29 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
         float x = event.getX ();
         float y = event.getY ();
+        int action = event.getAction ();
 
-        this.render.setCoordTouch ( x, y, event.getAction () );
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            startTime = System.currentTimeMillis();
+        }
+        else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+            if(System.currentTimeMillis() - startTime <= MAX_DURATION)
+            {
+                action = 3;
+            }
+        }
+
+
+
+        this.render.setCoordTouch ( x, y, action );
 
         return super.onTouchEvent ( event );
     }
+
+
+
 }

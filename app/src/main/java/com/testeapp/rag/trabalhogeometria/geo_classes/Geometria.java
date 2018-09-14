@@ -19,14 +19,15 @@ public abstract class Geometria {
     private float rotate_y;
     private float rotate_z;
     private int tamanho;
+    private int tipo;
     private GL10 openGL = null;
 
     public Geometria() {
 
         this.setColor_alpha ( 1 );
-        this.setColor_blue ( 1 );
-        this.setColor_green ( 1 );
-        this.setColor_red ( 1 );
+        this.setColor_blue ( 0 );
+        this.setColor_green ( 0 );
+        this.setColor_red ( 0 );
 
         this.setTranslate_x ( 0 );
         this.setTranslate_y ( 0 );
@@ -161,7 +162,7 @@ public abstract class Geometria {
         this.scale_z = scale_z;
     }
 
-    protected float getRotate_angulo() {
+    public float getRotate_angulo() {
         return rotate_angulo;
     }
 
@@ -213,7 +214,15 @@ public abstract class Geometria {
         return tamanho;
     }
 
-    protected void setTamanho(int tamanho) {
+    public void setTamanho(int tamanho) {
         this.tamanho = tamanho;
+    }
+
+    public int getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
     }
 }

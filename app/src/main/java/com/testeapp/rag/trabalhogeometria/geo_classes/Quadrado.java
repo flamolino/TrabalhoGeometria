@@ -12,22 +12,19 @@ public class Quadrado extends Geometria {
 
     private float[] vet_coords = null;
     private FloatBuffer buffer = null;
-    private int tamanho;
 
     public Quadrado(GL10 openGL, int tamanho){
 
         super();
-        this.tamanho = tamanho;
         this.setTamanho ( tamanho );
+        this.setTipo ( 1 );
         openGL.glEnableClientState ( GL10.GL_VERTEX_ARRAY );
         this.setOpenGL ( openGL );
 
     }
 
-
-
     public void desenha(){
-
+        int tamanho = this.getTamanho ();
         this.vet_coords = new float[] {
                 -tamanho/2, -tamanho/2,
                 -tamanho/2, tamanho/2,
@@ -42,6 +39,7 @@ public class Quadrado extends Geometria {
         this.getOpenGL ().glDrawArrays ( GL10.GL_TRIANGLE_STRIP, 0, 4 );
 
     }
+
 
 
 }
