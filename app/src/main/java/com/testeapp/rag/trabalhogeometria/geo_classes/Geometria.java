@@ -1,5 +1,13 @@
 package com.testeapp.rag.trabalhogeometria.geo_classes;
 
+import android.graphics.Bitmap;
+import android.opengl.GLException;
+import android.util.Log;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
+
 import javax.microedition.khronos.opengles.GL10;
 
 public abstract class Geometria {
@@ -138,7 +146,7 @@ public abstract class Geometria {
         this.translate_z = translate_z;
     }
 
-    protected float getScale_x() {
+    public float getScale_x() {
         return scale_x;
     }
 
@@ -146,7 +154,7 @@ public abstract class Geometria {
         this.scale_x = scale_x;
     }
 
-    protected float getScale_y() {
+    public float getScale_y() {
         return scale_y;
     }
 
@@ -225,4 +233,20 @@ public abstract class Geometria {
     public void setTipo(int tipo) {
         this.tipo = tipo;
     }
+
+    public static void getColorPixel(float x, float y, GL10 opengl2){
+
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4);
+        byteBuffer.order( ByteOrder.nativeOrder());
+        opengl2.glReadPixels ( (int) x, (int) y, 1 , 1, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, byteBuffer );
+        byte[] byteArray = new byte[4];
+        byteBuffer.get(byteArray);
+        int r = ((int) byteArray[0]);
+        int g = ((int) byteArray[1]);
+        int b = ((int) byteArray[2]);
+        String key = r + " " + g + " " + b;
+        Log.i("TAG", key);
+
+    }
+
 }

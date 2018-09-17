@@ -34,8 +34,8 @@ public class Triangulo extends Geometria {
 
         this.vet_coords = new float[] {
                 -tamanho/2, -tamanho/2,
-                (tamanho/2)+(-tamanho/2), tamanho/2,
-                tamanho/2, -tamanho/2
+                -tamanho/2, tamanho/2,
+                tamanho/2, tamanho/2
         };
 
         this.buffer = GeraBuffer.generateBuffer(this.vet_coords);
@@ -49,8 +49,8 @@ public class Triangulo extends Geometria {
         this.setCor ( this.red,this.green,this.blue,1 );
         this.vet_coords = new float[] {
                 -tamanho/2+lin, -tamanho/2+lin,
-                (tamanho/2)+(-tamanho/2)-lin+1, tamanho/2-lin,
-                tamanho/2-lin, -tamanho/2+lin
+                -tamanho/2+lin+1, tamanho/2-lin,
+                tamanho/2-lin, tamanho/2-lin
         };
 
         this.buffer = GeraBuffer.generateBuffer(this.vet_coords);

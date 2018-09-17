@@ -1,5 +1,7 @@
 package com.testeapp.rag.trabalhogeometria;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -25,15 +27,15 @@ public class Renderizador implements GLSurfaceView.Renderer {
     private Paralelogramo paralelogramo = null;
     private ArrayList<Geometria> lst_geometria = null;
     private Geometria obj_selecionado = null, obj_clonado = null;
-
     private MenuTopo menu = null;
+    private GL10 openGLVai = null;
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 
         gl.glClearColor(1, 1, 1, 1);
         this.lst_geometria = new ArrayList<>();
-
+        this.openGLVai = gl;
     }
 
     @Override
@@ -52,6 +54,8 @@ public class Renderizador implements GLSurfaceView.Renderer {
         int tipo;
 
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+        this.openGLVai = gl;
 
         this.menu.desenha ();
 
@@ -99,11 +103,13 @@ public class Renderizador implements GLSurfaceView.Renderer {
 
     private void moveGeoComTouch() {
 
-        float x, y, tam;
+        float x, y, tam, escala, angulo;
 
         switch (this.t_acao){
 
             case MotionEvent.ACTION_DOWN:
+
+                //Geometria.getColorPixel ( t_coord_x, t_coord_y, this.openGLVai );
 
                 if(this.obj_clonado == null) {
                     if (this.t_coord_y <= (this.altura - 120)) {
@@ -111,9 +117,13 @@ public class Renderizador implements GLSurfaceView.Renderer {
                         for (int i = 0; i < this.lst_geometria.size (); i++) {
                             x = this.lst_geometria.get ( i ).getPosX ();
                             y = this.lst_geometria.get ( i ).getPosY ();
-                            tam = this.lst_geometria.get ( i ).getTamanho () / 2;
+                            tam = this.lst_geometria.get ( i ).getTamanho () / 2 * this.lst_geometria.get ( i ).getScale_x ();
+
 
                             if(this.lst_geometria.get ( i ).getTipo () != 3) {
+
+                                angulo = this.lst_geometria.get ( i ).getRotate_angulo () % 360;
+
                                 if (t_coord_x >= (x - tam) && t_coord_x < (x + tam)) {
                                     if (t_coord_y >= (y - tam) && t_coord_y < (y + tam)) {
 
@@ -127,11 +137,13 @@ public class Renderizador implements GLSurfaceView.Renderer {
 
                                         this.obj_selecionado = this.lst_geometria.get ( i );
 
+
                                     }
                                 }
                             }
 
                         }
+
 
                     } else {
 
@@ -192,6 +204,7 @@ public class Renderizador implements GLSurfaceView.Renderer {
                         this.obj_clonado.setCor ( (float) Math.random (), (float) Math.random (), (float) Math.random (), 1 );
                         this.obj_clonado.setPosXY ( this.t_coord_x, this.t_coord_y );
                         this.obj_clonado.setTamanho ( new_tam );
+                        this.obj_clonado.setScala ( 1f, 1f);
                         this.lst_geometria.add ( obj_clonado );
                     }
                     this.obj_clonado = null;
@@ -202,17 +215,17 @@ public class Renderizador implements GLSurfaceView.Renderer {
 
             case MotionEvent.ACTION_MOVE:
 
-                    if(this.obj_clonado == null) {
-                        if (this.obj_selecionado != null) {
-                            if (this.t_coord_y < ((this.altura - 120) - (this.obj_selecionado.getTamanho ()) / 2) && this.t_coord_y >= this.obj_selecionado.getTamanho () / 2) {
-                                if (this.t_coord_x >= this.obj_selecionado.getTamanho () / 2 && this.t_coord_x < (largura - this.obj_selecionado.getTamanho () / 2)) {
+                if(this.obj_clonado == null) {
+                    if (this.obj_selecionado != null) {
+                        if (this.t_coord_y < ((this.altura - 120) - (this.obj_selecionado.getTamanho ()) / 2) && this.t_coord_y >= -this.obj_selecionado.getTamanho ()) {
+                            if (this.t_coord_x >= -this.obj_selecionado.getTamanho () && this.t_coord_x < (largura - -this.obj_selecionado.getTamanho ())) {
 
-                                    this.obj_selecionado.setPosXY ( t_coord_x, t_coord_y);
+                                this.obj_selecionado.setPosXY ( t_coord_x, t_coord_y);
 
-                                }
                             }
                         }
                     }
+                }
 
                 break;
 
@@ -240,10 +253,38 @@ public class Renderizador implements GLSurfaceView.Renderer {
 
                 }
                 if(this.obj_selecionado != null){
-                    this.obj_selecionado.setRotacao ( this.obj_selecionado.getRotate_angulo () + 45 );
+                    this.obj_selecionado.setRotacao ( this.obj_selecionado.getRotate_angulo () + 22.5f );
                     this.obj_selecionado = null;
                 }
                 break;
+
+            case 4:
+                for(int i = 0; i < this.lst_geometria.size (); i++){
+                    x = this.lst_geometria.get ( i ).getPosX ();
+                    y = this.lst_geometria.get ( i ).getPosY ();
+                    tam = this.lst_geometria.get ( i ).getTamanho () / 2;
+
+                    if (t_coord_x >= (x - tam) && t_coord_x < (x + tam)) {
+                        if (t_coord_y >= (y - tam) && t_coord_y < (y + tam)) {
+
+                            this.obj_selecionado = this.lst_geometria.get ( i );
+
+                        }
+                    }
+
+                }
+                if(this.obj_selecionado != null){
+                    if(this.obj_selecionado.getScale_x () == 1){
+                        this.obj_selecionado.setScala ( 1.42f, 1.42f);
+                    } else if(this.obj_selecionado.getScale_x () == 1.42f){
+                        this.obj_selecionado.setScala ( 1.42f + (1.42f/2.5f), 1.42f + (1.42f/2.5f));
+                    } else{
+                        this.obj_selecionado.setScala ( 1f,1f );
+                    }
+                    this.obj_selecionado = null;
+                }
+                break;
+
             default:
                 break;
         }
