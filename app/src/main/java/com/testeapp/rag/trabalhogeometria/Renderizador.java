@@ -204,7 +204,7 @@ public class Renderizador implements GLSurfaceView.Renderer {
                         this.obj_clonado.setCor ( (float) Math.random (), (float) Math.random (), (float) Math.random (), 1 );
                         this.obj_clonado.setPosXY ( this.t_coord_x, this.t_coord_y );
                         this.obj_clonado.setTamanho ( new_tam );
-                        this.obj_clonado.setScala ( 1f, 1f);
+                        this.obj_clonado.setScala ( 0.5f, 0.5f);
                         this.lst_geometria.add ( obj_clonado );
                     }
                     this.obj_clonado = null;
@@ -274,12 +274,12 @@ public class Renderizador implements GLSurfaceView.Renderer {
 
                 }
                 if(this.obj_selecionado != null){
-                    if(this.obj_selecionado.getScale_x () == 1){
-                        this.obj_selecionado.setScala ( 1.42f, 1.42f);
-                    } else if(this.obj_selecionado.getScale_x () == 1.42f){
-                        this.obj_selecionado.setScala ( 1.42f + (1.42f/2.5f), 1.42f + (1.42f/2.5f));
+                    if(this.obj_selecionado.getScale_x () == 0.5f){
+                        this.obj_selecionado.setScala ( (1.42f)/2, (1.42f)/2);
+                    } else if(this.obj_selecionado.getScale_x () == (1.42f)/2){
+                        this.obj_selecionado.setScala ( (1.42f + (1.42f/2.5f))/2, (1.42f + (1.42f/2.5f))/2);
                     } else{
-                        this.obj_selecionado.setScala ( 1f,1f );
+                        this.obj_selecionado.setScala ( 0.5f, 0.5f );
                     }
                     this.obj_selecionado = null;
                 }
