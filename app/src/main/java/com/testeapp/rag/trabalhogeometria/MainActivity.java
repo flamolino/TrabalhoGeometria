@@ -3,29 +3,35 @@ package com.testeapp.rag.trabalhogeometria;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
+import android.view.View;
 
 public class MainActivity extends Activity {
 
     private GLSurfaceView superficieDesenho = null;
     private Renderizador render = null;
-    long startTime;
-    static final int MAX_DURATION = 100;
-    //private int cliques = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate ( savedInstanceState );
 
         this.superficieDesenho = new GLSurfaceView(this);
-        this.render = new Renderizador();
+        this.render = new Renderizador(this);
         this.superficieDesenho.setRenderer(this.render);
         setContentView(this.superficieDesenho);
 
-    }
+        this.superficieDesenho.setOnTouchListener(render);
 
+    }
+    /*
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -54,7 +60,7 @@ public class MainActivity extends Activity {
 
         return super.onTouchEvent ( event );
 
-    }
+    }*/
 
 
 

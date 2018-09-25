@@ -1,10 +1,18 @@
 package com.testeapp.rag.trabalhogeometria;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
+import android.view.View;
 
 import com.testeapp.rag.trabalhogeometria.geo_classes.Geometria;
 import com.testeapp.rag.trabalhogeometria.geo_classes.MenuTopo;
@@ -13,11 +21,12 @@ import com.testeapp.rag.trabalhogeometria.geo_classes.Quadrado;
 import com.testeapp.rag.trabalhogeometria.geo_classes.Triangulo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class Renderizador implements GLSurfaceView.Renderer {
+public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener, SensorEventListener {
 
     private float t_coord_x, t_coord_y;
     private int t_acao;
@@ -29,6 +38,59 @@ public class Renderizador implements GLSurfaceView.Renderer {
     private Geometria obj_selecionado = null, obj_clonado = null;
     private MenuTopo menu = null;
     private GL10 openGLVai = null;
+    private long startTime;
+    private static final int MAX_DURATION = 100;
+    private SensorManager sensorManager = null;
+    private Sensor accelerometer = null;
+    private float bestOfX, bestOfY, bestOfZ;
+    private Context context = null;
+
+    public Renderizador(Context con){
+
+        this.context = con;
+
+        this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        this.accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        this.sensorManager.registerListener(this, this.accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        listSensors();
+    }
+
+    private void listSensors() {
+
+        List<Sensor> deviceSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
+        for(Sensor s: deviceSensors){
+            Log.d("Sensors", s.getName());
+        }
+
+    }
+
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+        float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
+
+
+            bestOfX = x;
+
+
+            bestOfY = y;
+
+
+            bestOfZ = z;
+
+
+    }
+
+
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -36,6 +98,7 @@ public class Renderizador implements GLSurfaceView.Renderer {
         gl.glClearColor(1, 1, 1, 1);
         this.lst_geometria = new ArrayList<>();
         this.openGLVai = gl;
+
     }
 
     @Override
@@ -46,6 +109,12 @@ public class Renderizador implements GLSurfaceView.Renderer {
 
         configuraTela(gl, width, height);
         this.menu = new MenuTopo ( gl, width, height );
+
+        Quadrado quad = new Quadrado(gl, 250);
+        quad.setCor(1,1,0, 1);
+        quad.setPosXY(400, 400);
+        lst_geometria.add(quad);
+
     }
 
     @Override
@@ -64,6 +133,7 @@ public class Renderizador implements GLSurfaceView.Renderer {
             switch (tipo){
                 case 1:
                     this.quadrado = (Quadrado) this.lst_geometria.get ( i );
+                    this.quadrado.setPosXY(this.quadrado.getPosX() + bestOfX, this.quadrado.getPosY() + bestOfY);
                     this.quadrado.desenha ();
                     break;
                 case 2:
@@ -96,7 +166,7 @@ public class Renderizador implements GLSurfaceView.Renderer {
     public void setCoordTouch(float x, float y, int acao){
 
         this.t_coord_x = x;
-        this.t_coord_y = this.altura - y + 37;
+        this.t_coord_y = this.altura - y;
         this.t_acao = acao;
         moveGeoComTouch();
     }
@@ -109,7 +179,7 @@ public class Renderizador implements GLSurfaceView.Renderer {
 
             case MotionEvent.ACTION_DOWN:
 
-                //Geometria.getColorPixel ( t_coord_x, t_coord_y, this.openGLVai );
+                Geometria.getColorPixel ( t_coord_x, t_coord_y, this.openGLVai );
 
                 if(this.obj_clonado == null) {
                     if (this.t_coord_y <= (this.altura - 120)) {
@@ -292,4 +362,60 @@ public class Renderizador implements GLSurfaceView.Renderer {
     }
 
 
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+
+        float x = motionEvent.getX ();
+        float y = motionEvent.getY ();
+        int action = motionEvent.getAction ();
+
+        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+
+            startTime = System.currentTimeMillis();
+
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+
+            if(System.currentTimeMillis() - startTime <= MAX_DURATION)
+            {
+                action = 4;
+            } else
+            if(System.currentTimeMillis() - startTime <= MAX_DURATION+100)
+            {
+                action = 3;
+            }
+
+        }
+
+        setCoordTouch(x, y, action);
+
+
+        return true;
+    }
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
