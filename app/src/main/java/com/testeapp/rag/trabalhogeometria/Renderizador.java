@@ -15,11 +15,13 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import com.testeapp.rag.trabalhogeometria.geo_classes.Geometria;
+import com.testeapp.rag.trabalhogeometria.geo_classes.GeraBuffer;
 import com.testeapp.rag.trabalhogeometria.geo_classes.MenuTopo;
 import com.testeapp.rag.trabalhogeometria.geo_classes.Paralelogramo;
 import com.testeapp.rag.trabalhogeometria.geo_classes.Quadrado;
 import com.testeapp.rag.trabalhogeometria.geo_classes.Triangulo;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +46,8 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
     private Sensor accelerometer = null;
     private float bestOfX, bestOfY, bestOfZ;
     private Context context = null;
+    private float angulo = 0;
+    private int anguloReverso = 0;
 
     public Renderizador(Context con){
 
@@ -53,6 +57,7 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
         this.accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         this.sensorManager.registerListener(this, this.accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         listSensors();
+
     }
 
     private void listSensors() {
@@ -72,15 +77,11 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
         float y = event.values[1];
         float z = event.values[2];
 
-
             bestOfX = x;
-
 
             bestOfY = y;
 
-
             bestOfZ = z;
-
 
     }
 
@@ -95,7 +96,7 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 
-        gl.glClearColor(1, 1, 1, 1);
+        gl.glClearColor(0, 0, 0, 1);
         this.lst_geometria = new ArrayList<>();
         this.openGLVai = gl;
 
@@ -106,14 +107,32 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
 
         this.largura = width;
         this.altura = height;
+        int tamanho = width / 10;
 
         configuraTela(gl, width, height);
         this.menu = new MenuTopo ( gl, width, height );
 
-        Quadrado quad = new Quadrado(gl, 250);
-        quad.setCor(1,1,0, 1);
-        quad.setPosXY(400, 400);
+        Quadrado quad = new Quadrado(gl, tamanho);
+        quad.randomizaCor();
+        quad.setPosXY(width/2, height/2);
         lst_geometria.add(quad);
+
+
+        gl.glEnableClientState ( GL10.GL_VERTEX_ARRAY );
+
+        float[] vet_coord = new float[] {
+                -tamanho/2, 0,
+                -tamanho/2, tamanho*3,
+                tamanho/2, 0,
+                tamanho/2, tamanho*3
+        };
+
+        FloatBuffer buffer = GeraBuffer.generateBuffer(vet_coord);
+        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, buffer);
+        gl.glLoadIdentity ();
+
+        this.t_coord_x = width/2;
+        this.t_coord_y = height/2;
 
     }
 
@@ -124,16 +143,15 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
 
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-        this.openGLVai = gl;
+        //this.menu.desenha ();
 
-        this.menu.desenha ();
-
+        /*
         for(int i = 0; i < this.lst_geometria.size (); i++){
             tipo = this.lst_geometria.get ( i ).getTipo ();
             switch (tipo){
                 case 1:
                     this.quadrado = (Quadrado) this.lst_geometria.get ( i );
-                    this.quadrado.setPosXY(this.quadrado.getPosX() + bestOfX, this.quadrado.getPosY() + bestOfY);
+                   // this.quadrado.setPosXY(this.quadrado.getPosX() + bestOfX, this.quadrado.getPosY() + bestOfY);
                     this.quadrado.desenha ();
                     break;
                 case 2:
@@ -148,6 +166,38 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
                     break;
             }
         }
+        */
+
+        gl.glLoadIdentity();
+
+        gl.glColor4f(1, 0, 0, 1);
+        gl.glTranslatef(t_coord_x, t_coord_y, 1);
+        gl.glRotatef(this.angulo, 0,0,4);
+        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+
+
+        //empilha uma transformação geometrica
+        gl.glPushMatrix();
+
+            gl.glColor4f(1, 1, 0, 1);
+            gl.glTranslatef(0, 0, 0);
+            gl.glRotatef((this.angulo*2)*-1, 0,0,4);
+            gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+
+                gl.glPushMatrix();
+
+                gl.glColor4f(0.9f, 0.9f, 0.9f, 1);
+                gl.glTranslatef(0, 200, 0);
+                gl.glRotatef(this.angulo*4, 0,0,4);
+                gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+
+
+                gl.glPopMatrix();
+
+        gl.glPopMatrix();
+
+        this.angulo += 2;
+
 
     }
 
@@ -169,6 +219,7 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
         this.t_coord_y = this.altura - y;
         this.t_acao = acao;
         moveGeoComTouch();
+
     }
 
     private void moveGeoComTouch() {
@@ -387,6 +438,8 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
         }
 
         setCoordTouch(x, y, action);
+
+
 
 
         return true;

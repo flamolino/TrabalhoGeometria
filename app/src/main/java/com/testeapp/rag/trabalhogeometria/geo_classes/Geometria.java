@@ -61,6 +61,13 @@ public abstract class Geometria {
 
     }
 
+    public void randomizaCor(){
+        this.setColor_red ( (float) Math.random() );
+        this.setColor_green ( (float) Math.random() );
+        this.setColor_blue ( (float) Math.random() );
+        this.setColor_alpha ( this.color_alpha );
+    }
+
     public void setPosXY(float x, float y){
 
         this.setTranslate_x ( x );
