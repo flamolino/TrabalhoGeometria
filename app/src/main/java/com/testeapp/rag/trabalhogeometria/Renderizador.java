@@ -19,6 +19,7 @@ import com.testeapp.rag.trabalhogeometria.geo_classes.GeraBuffer;
 import com.testeapp.rag.trabalhogeometria.geo_classes.MenuTopo;
 import com.testeapp.rag.trabalhogeometria.geo_classes.Paralelogramo;
 import com.testeapp.rag.trabalhogeometria.geo_classes.Quadrado;
+import com.testeapp.rag.trabalhogeometria.geo_classes.Relogio;
 import com.testeapp.rag.trabalhogeometria.geo_classes.Triangulo;
 
 import java.nio.FloatBuffer;
@@ -48,6 +49,7 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
     private Context context = null;
     private float angulo = 0;
     private int anguloReverso = 0;
+    private Relogio relogio = null;
 
     public Renderizador(Context con){
 
@@ -96,7 +98,7 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 
-        gl.glClearColor(0, 0, 0, 1);
+        gl.glClearColor(1, 1, 1, 1);
         this.lst_geometria = new ArrayList<>();
         this.openGLVai = gl;
 
@@ -134,6 +136,10 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
         this.t_coord_x = width/2;
         this.t_coord_y = height/2;
 
+        this.relogio = new Relogio(gl, 400, 23, 30, 0);
+        this.relogio.setCor(0, 0, 0, 1);
+        this.relogio.setPosXY(this.t_coord_x, this.t_coord_y);
+
     }
 
     @Override
@@ -142,6 +148,10 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
         int tipo;
 
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+        this.relogio.setPosXY(this.t_coord_x, this.t_coord_y);
+        this.relogio.desenha();
+
 
         //this.menu.desenha ();
 
@@ -166,7 +176,7 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
                     break;
             }
         }
-        */
+
 
         gl.glLoadIdentity();
 
@@ -198,6 +208,7 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
 
         this.angulo += 2;
 
+*/
 
     }
 

@@ -97,6 +97,17 @@ public abstract class Geometria {
 
     }
 
+    protected void setOpenGLConfigs(int angulo){
+
+        this.openGL.glTranslatef ( this.getTranslate_x (), this.getTranslate_y (), this.getTranslate_z () );
+        this.openGL.glRotatef ( angulo, this.getRotate_x (), this.getRotate_y (), this.getRotate_z () );
+        this.openGL.glScalef ( this.getScale_x (), this.getScale_y (), this.getScale_z () );
+        this.openGL.glColor4f ( this.getColor_red (), this.getColor_green (), this.getColor_blue (), this.getColor_alpha () );
+
+    }
+
+
+
     protected float getColor_red() {
         return color_red;
     }
