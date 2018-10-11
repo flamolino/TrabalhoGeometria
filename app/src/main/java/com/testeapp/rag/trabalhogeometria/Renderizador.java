@@ -109,7 +109,7 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
 
         this.largura = width;
         this.altura = height;
-        int tamanho = width / 10;
+        int tamanho = width / 3;
 
         configuraTela(gl, width, height);
         this.menu = new MenuTopo ( gl, width, height );
@@ -136,9 +136,9 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
         this.t_coord_x = width/2;
         this.t_coord_y = height/2;
 
-        this.relogio = new Relogio(gl, 400, 23, 30, 0);
-        this.relogio.setCor(0, 0, 0, 1);
+        this.relogio = new Relogio(gl, tamanho, 23, 30, 0);
         this.relogio.setPosXY(this.t_coord_x, this.t_coord_y);
+        this.relogio.setCorRelogio ( 0.1f, 0.85f, 0, 1, Relogio.CENTRO_RELOGIO );
 
     }
 
