@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.testeapp.rag.trabalhogeometria.geo_classes.GLText;
 import com.testeapp.rag.trabalhogeometria.geo_classes.Geometria;
 import com.testeapp.rag.trabalhogeometria.geo_classes.GeraBuffer;
 import com.testeapp.rag.trabalhogeometria.geo_classes.MenuTopo;
@@ -50,6 +51,7 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
     private float angulo = 0;
     private int anguloReverso = 0;
     private Relogio relogio = null;
+    private GLText texto = null;
 
     public Renderizador(Context con){
 
@@ -98,7 +100,7 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 
-        gl.glClearColor(1, 1, 1, 1);
+        gl.glClearColor(0, 0, 0, 1);
         this.lst_geometria = new ArrayList<>();
         this.openGLVai = gl;
 
@@ -119,7 +121,6 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
         quad.setPosXY(width/2, height/2);
         lst_geometria.add(quad);
 
-
         gl.glEnableClientState ( GL10.GL_VERTEX_ARRAY );
 
         float[] vet_coord = new float[] {
@@ -138,7 +139,13 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
 
         this.relogio = new Relogio(gl, tamanho, 23, 30, 0);
         this.relogio.setPosXY(this.t_coord_x, this.t_coord_y);
-        this.relogio.setCorRelogio ( 0.1f, 0.85f, 0, 1, Relogio.CENTRO_RELOGIO );
+        this.relogio.setCorRelogio ( 1.0f, 0.85f, 0, 1, Relogio.CENTRO_RELOGIO );
+
+        this.texto = new GLText ( gl );
+        this.texto.setTextPosition ( 10, 50, 0 );
+        this.texto.setTextColor ( 1, 0, 0, 1 );
+        this.texto.setText ( "abcdefghijklmnopqrstuvwxyz" );
+        this.texto.setTextSize ( 3);
 
     }
 
@@ -151,6 +158,8 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
 
         this.relogio.setPosXY(this.t_coord_x, this.t_coord_y);
         this.relogio.desenha();
+
+        this.texto.drawText ();
 
 
         //this.menu.desenha ();
