@@ -13,6 +13,10 @@ public class GLText {
     private float color_green;
     private float color_blue;
     private float color_alpha;
+    private float bgcolor_red;
+    private float bgcolor_green;
+    private float bgcolor_blue;
+    private float bgcolor_alpha;
     private float translate_x;
     private float translate_y;
     private float translate_z;
@@ -35,6 +39,11 @@ public class GLText {
         this.color_blue = 0;
         this.color_alpha = 1;
 
+        this.bgcolor_red = 1;
+        this.bgcolor_green = 1;
+        this.bgcolor_blue = 1;
+        this.bgcolor_alpha = 0;
+
         this.translate_x = 0;
         this.translate_y = 0;
         this.translate_z = 0;
@@ -52,6 +61,15 @@ public class GLText {
         this.color_green = green;
         this.color_blue = blue;
         this.color_alpha = alpha;
+
+    }
+
+    public void setTextBackgroundColor(float red, float green, float blue, float alpha){
+
+        this.bgcolor_red = red;
+        this.bgcolor_green = green;
+        this.bgcolor_blue = blue;
+        this.bgcolor_alpha = alpha;
 
     }
 
@@ -121,7 +139,7 @@ public class GLText {
                     if (this.letter[j][i] == 1) {
                         this.openGL.glColor4f ( this.color_red, this.color_green, this.color_blue, this.color_alpha );
                     } else {
-                        this.openGL.glColor4f ( 1, 1, 1, 0 );
+                        this.openGL.glColor4f ( this.bgcolor_red, this.bgcolor_green, this.bgcolor_blue, this.bgcolor_alpha );
                     }
                     this.openGL.glDrawArrays ( GL10.GL_TRIANGLE_STRIP, 0, 4 );
 
@@ -461,8 +479,216 @@ public class GLText {
                 };
                 break;
 
+            case '0':
+                arr_letter = new int[][]{
+                        {0, 1, 1, 1, 0},
+                        {1, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {0, 1, 1, 1, 0},
+                };
+                break;
+
+            case '1':
+                arr_letter = new int[][]{
+                        {0, 0, 1, 0, 0},
+                        {0, 1, 1, 0, 0},
+                        {1, 0, 1, 0, 0},
+                        {0, 0, 1, 0, 0},
+                        {0, 0, 1, 0, 0},
+                        {0, 0, 1, 0, 0},
+                        {0, 0, 1, 0, 0},
+                        {0, 0, 1, 0, 0},
+                };
+                break;
+
+            case '2':
+                arr_letter = new int[][]{
+                        {0, 1, 1, 1, 0},
+                        {1, 0, 0, 0, 1},
+                        {0, 0, 0, 0, 1},
+                        {0, 0, 0, 0, 1},
+                        {0, 0, 0, 1, 0},
+                        {0, 0, 1, 0, 0},
+                        {0, 1, 0, 0, 0},
+                        {1, 1, 1, 1, 1},
+                };
+                break;
+
+            case '3':
+                arr_letter = new int[][]{
+                        {0, 1, 1, 1, 0},
+                        {1, 0, 0, 0, 1},
+                        {0, 0, 0, 0, 1},
+                        {0, 1, 1, 1, 0},
+                        {0, 0, 0, 0, 1},
+                        {0, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {0, 1, 1, 1, 0},
+                };
+                break;
+
+            case '4':
+                arr_letter = new int[][]{
+                        {0, 0, 0, 1, 0},
+                        {0, 0, 1, 1, 0},
+                        {0, 1, 0, 1, 0},
+                        {0, 1, 0, 1, 0},
+                        {1, 0, 0, 1, 0},
+                        {1, 1, 1, 1, 1},
+                        {0, 0, 0, 1, 0},
+                        {0, 0, 0, 1, 0},
+                };
+                break;
+
+            case '5':
+                arr_letter = new int[][]{
+                        {0, 1, 1, 1, 1},
+                        {0, 1, 0, 0, 0},
+                        {1, 0, 0, 0, 0},
+                        {1, 1, 1, 1, 0},
+                        {0, 0, 0, 0, 1},
+                        {0, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {0, 1, 1, 1, 0},
+                };
+                break;
+
+            case '6':
+                arr_letter = new int[][]{
+                        {0, 1, 1, 1, 0},
+                        {1, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 0},
+                        {1, 1, 1, 1, 0},
+                        {1, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {0, 1, 1, 1, 0},
+                };
+                break;
+
+            case '7':
+                arr_letter = new int[][]{
+                        {1, 1, 1, 1, 1},
+                        {0, 0, 0, 1, 0},
+                        {0, 0, 0, 1, 0},
+                        {0, 0, 1, 0, 0},
+                        {0, 0, 1, 0, 0},
+                        {0, 1, 0, 0, 0},
+                        {0, 1, 0, 0, 0},
+                        {0, 1, 0, 0, 0},
+                };
+                break;
+
+            case '8':
+                arr_letter = new int[][]{
+                        {0, 1, 1, 1, 0},
+                        {1, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {0, 1, 1, 1, 0},
+                        {1, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {0, 1, 1, 1, 0},
+                };
+                break;
+
+            case '9':
+                arr_letter = new int[][]{
+                        {0, 1, 1, 1, 0},
+                        {1, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {0, 1, 1, 1, 1},
+                        {0, 0, 0, 0, 1},
+                        {1, 0, 0, 0, 1},
+                        {0, 1, 1, 1, 0},
+                };
+                break;
+
+            case ':':
+                arr_letter = new int[][]{
+                        {0},
+                        {0},
+                        {1},
+                        {0},
+                        {0},
+                        {0},
+                        {0},
+                        {1},
+                };
+                break;
+
+            case '.':
+                arr_letter = new int[][]{
+                        {0},
+                        {0},
+                        {0},
+                        {0},
+                        {0},
+                        {0},
+                        {0},
+                        {1},
+                };
+                break;
+/*
+            case '.':
+                arr_letter = new int[][]{
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {1, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {1, 0, 0, 0, 0},
+                };
+                break;
+
+            case '.':
+                arr_letter = new int[][]{
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {1, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {1, 0, 0, 0, 0},
+                };
+                break;
+
+            case '.':
+                arr_letter = new int[][]{
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {1, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {1, 0, 0, 0, 0},
+                };
+                break;
+
+            case '.':
+                arr_letter = new int[][]{
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {1, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0},
+                        {1, 0, 0, 0, 0},
+                };
+                break;
 
 
+*/
 
 
 
@@ -470,14 +696,14 @@ public class GLText {
 
             default:
                 arr_letter = new int[][]{
-                        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                        {0},
+                        {0},
+                        {0},
+                        {0},
+                        {0},
+                        {0},
+                        {0},
+                        {0},
                 };
                 break;
 

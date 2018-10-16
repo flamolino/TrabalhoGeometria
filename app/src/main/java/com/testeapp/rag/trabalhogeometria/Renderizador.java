@@ -3,12 +3,14 @@ package com.testeapp.rag.trabalhogeometria;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -29,6 +31,8 @@ import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import static com.testeapp.rag.trabalhogeometria.geo_classes.GeraBuffer.generateBuffer;
 
 public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener, SensorEventListener {
 
@@ -52,6 +56,9 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
     private int anguloReverso = 0;
     private Relogio relogio = null;
     private GLText texto = null;
+    private int codTextura = 0;
+    private FloatBuffer buffer = null;
+    private float[] coordgit = null;
 
     public Renderizador(Context con){
 
@@ -130,7 +137,7 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
                 tamanho/2, tamanho*3
         };
 
-        FloatBuffer buffer = GeraBuffer.generateBuffer(vet_coord);
+        buffer = generateBuffer(vet_coord);
         gl.glVertexPointer(2, GL10.GL_FLOAT, 0, buffer);
         gl.glLoadIdentity ();
 
@@ -144,9 +151,87 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
         this.texto = new GLText ( gl );
         this.texto.setTextPosition ( 10, 50, 0 );
         this.texto.setTextColor ( 1, 0, 0, 1 );
-        this.texto.setText ( "abcdefghijklmnopqrstuvwxyz" );
-        this.texto.setTextSize ( 3);
+        this.texto.setTextBackgroundColor(1, 1, 1, 0);
+        this.texto.setText ( "frfango" );
+        this.texto.setTextSize ( 6);
 
+
+        //EXEMPLO DE UM VETOR DE COORDENADAS DE TEXTURA NO SISTEMA UV OU ST.
+        float[] coordgit = {
+                0,1,
+                0,0,
+                1,1,
+                1,0};
+
+        //RECORTE DE TEXTURA
+        float[] coordTexura = { 0,0.5f,
+                0,0,
+                0.5f,0.5f,
+                0.5f,0};
+
+        //ESPELHAMENTO DE TEXTURA
+        float[] coordTexura2 = { 0, 0,
+                0,1,
+                1,0,
+                1,1};
+
+        //HABILITANTO A MÁQUINA OPENGL PARA O USO DE TEXTURAS
+        gl.glEnable(GL10.GL_TEXTURE_2D);
+
+        //HABILITA A MAQUINA PARA UTILIZAR UM VETOR DE COORDENADAS DE TEX
+        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+
+        //CRIANDO O VETOR DE COORDENADAS EM JAVA;
+        float[] vetCoordText = {0,1,
+                0,0,
+                1,1,
+                1,0};
+
+
+        gl.glLoadIdentity ();
+
+        //CRIANDO O FLOAT BUFFER A PARTIR DO VETOR JAVA
+        FloatBuffer texCoords = generateBuffer(coordgit);
+
+        //REGISTRA AS COORDENADAS DE TEXTURA NA MÁQUINA OPENGL
+        gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texCoords);
+
+        codTextura = carregaTextura(gl, R.mipmap.luigi_face);
+
+        //ASSINAR A TEXTURA QUE A OPENGL VAI UTILIZAR NO DESENHO DA PRIMITIVA
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, codTextura);
+
+    }
+
+    private int carregaTextura(GL10 opengl, int codTextura) {
+
+        //CARREGA A IMAGEM NA MEMORIA RAAAMMMM
+        Bitmap imagem = BitmapFactory.decodeResource(this.context.getResources(), codTextura);
+
+        //DEFINE UM ARRAY PARA ARMAZ. DOS IDS DE TEXTURA (APENAS 1 POSICAO)
+        int[] idTextura = new int[1];
+
+        //GERA AS AREAS NA GPU E CRIA UM ID PARA CADA UMA
+        opengl.glGenTextures(1, idTextura, 0);
+
+        //DIZER PARA A MAQUINA QUAL DAS AREAS CRIADAS NA VRAM EU QUERO TRABALHAR
+        opengl.glBindTexture(GL10.GL_TEXTURE_2D, idTextura[0]);
+
+        //COPIA A IMAGEM DA RAM PARA A VRAM
+        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, imagem,0);
+
+        //CONFIGURA OS ALGORITMOS QUE SERAO UTILIZADOS PARA RECALCULAR A IMAGEM EM CASO DE ESCLA PARA MAIS OU MENOS (MIN E MAG)
+        opengl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
+
+        opengl.glTexParameterf(GL10.GL_TEXTURE_2D,GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_NEAREST);
+
+        //APONTA A VRAM OPENGL PARA O NADA (CODIGO ZERO)
+        opengl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
+
+        //LIBERA A MEMORIA RAM
+        imagem.recycle();
+
+        return idTextura[0];
     }
 
     @Override
@@ -156,15 +241,25 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
 
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-        this.relogio.setPosXY(this.t_coord_x, this.t_coord_y);
-        this.relogio.desenha();
-
+        this.texto.setTextPosition(this.t_coord_x, this.t_coord_y + 100, 1);
         this.texto.drawText ();
+
+
+/*
+        gl.glLoadIdentity ();
+        gl.glTranslatef (this.t_coord_x, this.t_coord_y, 1 );
+        gl.glScalef(1, 0.35f, 1);
+        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+
+
+
+        //this.relogio.setPosXY(this.t_coord_x, this.t_coord_y);
+        //this.relogio.desenha();
 
 
         //this.menu.desenha ();
 
-        /*
+
         for(int i = 0; i < this.lst_geometria.size (); i++){
             tipo = this.lst_geometria.get ( i ).getTipo ();
             switch (tipo){
@@ -185,6 +280,7 @@ public class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListene
                     break;
             }
         }
+
 
 
         gl.glLoadIdentity();
